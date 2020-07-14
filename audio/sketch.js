@@ -12,10 +12,11 @@ let modMaxFreq = 1020;
 let modMinFreq = 0;
 let modMaxDepth = 0;
 let modMinDepth = 1.0;
-let modulatorFreq = 60;
+let modulatorFreq = 55;
 let noiseAmpMod = 0;
 let carrierAmpMod = 0;
 let modmoder = 0;
+let filter;
 
 let angleSlide = 0;
 
@@ -23,6 +24,8 @@ var maxZ;
 var slide_z;
 var len;
 var opp;
+
+
 
 // var cursor1;
 
@@ -34,12 +37,16 @@ var mouseReady = true;
 
 // let shape1;
 
+let rezisableX;
+let rezisableY;
 
 
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  // createCanvas(windowWidth, windowHeight);
   noFill();
+
+
 
   // yB = windowHeight / 2;
 
@@ -47,9 +54,11 @@ function setup() {
 
 
   carrier = new p5.Oscillator('sine');
+  filter = new p5.HighPass();
   noise = new p5.Noise('sine');
   // carrier.amp(1, 0.01); // set amplitude
   carrier.freq(carrierBaseFreq); // set frequency
+  carrier.start();
   // carrier.start(); // start oscillating
 
   // try changing the type to 'square', 'sine' or 'triangle'
@@ -74,13 +83,17 @@ function setup() {
   unboy = height;
 
 
+
+
   // colorMode(HSB, maxH, maxB);
   textAlign(LEFT, CENTER);
   textSize(20);
   // rectMode(CENTER);
+  noise.disconnect();
+  noise.connect(filter);
 
-  slide_z = new Slider(width * 0.5, height * 0.8, 0, "Z ", maxZ);
-  cursor1 = new Ccursor(100, windowHeight / 2, 0, 0, 100, 100);
+  windowResized();
+
 
 }
 
@@ -139,6 +152,11 @@ function draw() {
   carrier.freq(modFreq);
   modulator.freq(modulatorFreq);
 
+  let Freq = map(cursor1.valx, 0, windowWidth, 20, 5000);
+  let Reso = map(cursor1.valy, 0, windowHeight, 25, 0);
+  Freq = constrain(Freq, 0, 22050);
+  filter.freq(Freq);
+  filter.res(Reso);
 
   // change the amplitude of the modulator
   // negative amp reverses the sawtooth waveform, and sounds percussive
@@ -149,15 +167,15 @@ function draw() {
   let modDepth = map(cursor1.valy, 0, windowHeight, modMinDepth, modMaxDepth);
 
   carrier.amp(modDepth - Modmod);
-  modulator.amp(150);
+  modulator.amp(150, 0.1);
 
 
 
   // let noiseAmpMod =0;
   let noiseAmpMod = map(slide_z.val, 0, maxZ, 0, 0.5);
-  let carrierAmpMod = map(slide_z.val, 0, maxZ, 1.0, 0);
+  // let carrierAmpMod = map(slide_z.val, 0, maxZ, 1.0, 0);
   // carrier.amp(carrierAmpMod);
-  noise.amp(noiseAmpMod);
+  noise.amp(noiseAmpMod, 0.1);
 
 
   // analyze the waveform
@@ -183,19 +201,24 @@ function draw() {
   // add a note about what's happening
   text('X=Carrier Frequency: ' + modFreq.toFixed(3) + ' Hz', 20, 20);
   text(
-    'Y=carrier Amplitude: ' + modDepth.toFixed(3),
+    'Y=Carrier Amplitude: ' + modDepth.toFixed(3),
     20,
     40
   );
   text(
-    'Carrier Frequency (pre-modulation): ' + carrierBaseFreq + ' Hz',
-    width / 2,
-    20
+    'Modulator Frequency: ' + + modulatorFreq + ' Hz',
+    20,
+    60
   );
   text(
-    'Modulator Frequency: ' + modulatorFreq + ' Hz',
+    'Y=Resonance: ' + Reso.toFixed(3) + ' Hz',
     width / 2,
     40
+  );
+  text(
+    'X=LowPass Frequency: ' + Freq.toFixed(3) + ' Hz',
+    width / 2,
+    20
   );
   // text(
   //   'x',
@@ -223,7 +246,7 @@ var Slider = function (x, y, val, sym, max) {
   this.sym = sym;
   this.max = max;
   this.cx = map(this.val, 0, max, x - len, x + len);
-  this.sz = 22;
+  this.sz = 35;
   this.len = len;
   this.drag = false;
 
@@ -244,19 +267,23 @@ var Slider = function (x, y, val, sym, max) {
   };
 
   this.show = function () {
+    // this.x = windowWidth * 0.5;
+    // this.y = windowHeight * 0.8;
+    // this.cx = constrain(this.x - this.len, this.x - this.len, this.x + this.len);
     this.inCir();
     if (this.drag) {
       this.cx = constrain(mouseX, this.x - this.len, this.x + this.len);
-    }
+    } 
+
     this.val = round(map(this.cx, this.x - this.len, this.x + this.len, 0, this.max));
 
-    opp = slide_z.val <= (slide_z.max / 2) ? round(slide_z.max / 2) : -round(slide_z.max / 2);
+    // opp = slide_z.val <= (slide_z.max / 2) ? round(slide_z.max / 2) : -round(slide_z.max / 2);
 
     stroke(255);
     line(this.x - this.len, this.y, this.x + this.len, this.y);
 
     fill(255);
-    text(this.sym, this.x - this.len - 36, this.y);
+    text(this.sym, this.x - this.len - 80, this.y);
 
     // text(this.val, this.x + this.len + 10, this.y);
     ellipse(this.cx, this.y, this.sz, this.sz);
@@ -270,10 +297,10 @@ var Ccursor = function (x, y, valx, valy, w, h) {
   this.y = y;
   this.w = w;
   this.h = h;
-  this.offsetX = 50;
-  this.offsetY = 50;
-  this.valx = valx;
-  this.valy = valy;
+  this.offsetX = 0;
+  this.offsetY = 0;
+  this.valx = constrain(valx, 0, windowWidth);
+  this.valy = constrain(valy, 0, windowHeight);
 
   this.inCir = function () {
     if (mouseIsPressed) {
@@ -339,7 +366,10 @@ var Ccursor = function (x, y, valx, valy, w, h) {
 //});
 //}
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth, windowHeight+50);
+  // resizeCanvas(windowWidth, windowHeight);
+  slide_z = new Slider(windowWidth * 0.5, windowHeight * 0.8, 0, "Noise ", maxZ);
+  cursor1 = new Ccursor(100, windowHeight / 2, 0, 0, 50, 50);
 }
 
 function touchMoved() {
@@ -350,7 +380,7 @@ function touchMoved() {
 
 function touchStarted() {
 
-  carrier.start(); // start oscillating
+  // carrier.start(); // start oscillating
   noise.start();
   //shape1.pressed();
   // carrier.amp(0);

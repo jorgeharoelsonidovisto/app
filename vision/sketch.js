@@ -42,7 +42,7 @@ var mouseReady = true;
 
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+
   noFill();
 
   // yB = windowHeight / 2;
@@ -83,8 +83,8 @@ function setup() {
   textSize(20);
   // rectMode(CENTER);
 
-  slide_z = new Slider(width * 0.5, height * 0.8, 0, "Z ", maxZ);
-  cursor1 = new Ccursor(100, windowHeight * 0.3, 0, 0, 100, 100);
+
+  windowResized();
 
 
 }
@@ -179,17 +179,17 @@ function draw() {
   // }
   // endShape();
 
-  let Modi = map(cursor1.valy, 0, windowHeight, 0.4, 99);
-  let ModiF = map(cursor1.valx, 0, windowWidth, 0, 1);
+  let Modi = map(cursor1.valy, 0, windowHeight, 2, 50);
+  let ModiF = map(cursor1.valx, 0, windowWidth, 0, 2);
   // noStroke();
   // background(220);
   translate(0, height/2);
   scale(1, -1);
 
-  stroke(0, 0, 255);
+  stroke(100, 100, 255);
   noFill();
   beginShape();
-  vertex(0, height);
+  vertex(-10, height);
   for(var x = 0; x < width; x++){
     //var angle = map(x, 0, width, 0, TWO_PI);
     var angle = offset + x * ModiF;
@@ -198,7 +198,7 @@ function draw() {
     var y = map(sin(angle), -strum, strum, -height /Modi, height/Modi );
     vertex(x, y);
   }
-  vertex(width, height);
+  vertex(width + 25, height);
   endShape();
   offset += 0.1;
 
@@ -207,8 +207,8 @@ function draw() {
 
 
   // strokeWeight(1);
-  // add a note about what's happening
-  // text('X=Carrier Frequency: ' + modFreq.toFixed(3) + ' Hz', 20, 20);
+  // // add a note about what's happening
+  // text('X=Carrier Frequency: ' + Modi + ' Hz', 20, 20);
   // text(
   //   'Y=carrier Amplitude: ' + modDepth.toFixed(3),
   //   20,
@@ -297,8 +297,8 @@ var Ccursor = function (x, y, valx, valy, w, h) {
   this.y = y;
   this.w = w;
   this.h = h;
-  this.offsetX = 50;
-  this.offsetY = 50;
+  this.offsetX = 0;
+  this.offsetY = 0;
   this.valx = valx;
   this.valy = valy;
 
@@ -366,7 +366,10 @@ var Ccursor = function (x, y, valx, valy, w, h) {
 //});
 //}
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+    createCanvas(windowWidth, windowHeight+50);
+  // resizeCanvas(windowWidth, windowHeight);
+  slide_z = new Slider(width * 0.5, height * 0.8, 0, "Z ", maxZ);
+  cursor1 = new Ccursor(100, windowHeight * 0.3, 0, 0, 50, 50);
 }
 
 function touchMoved() {
