@@ -366,7 +366,7 @@ var Ccursor = function (x, y, valx, valy, w, h) {
 //});
 //}
 function windowResized() {
-  createCanvas(windowWidth, windowHeight+50);
+  createCanvas(windowWidth, windowHeight+100);
   // resizeCanvas(windowWidth, windowHeight);
   slide_z = new Slider(windowWidth * 0.5, windowHeight * 0.8, 0, "Noise ", maxZ);
   cursor1 = new Ccursor(100, windowHeight / 2, 0, 0, 50, 50);
