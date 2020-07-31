@@ -43,7 +43,7 @@ var mouseReady = true;
 
 function setup() {
 
-  noFill();
+  // noFill();
 
   // yB = windowHeight / 2;
 
@@ -186,7 +186,7 @@ function draw() {
   translate(0, height/2);
   scale(1, -1);
 
-  stroke(100, 100, 255);
+  stroke('rgba(255,255,255)');
   noFill();
   beginShape();
   vertex(-10, height);
@@ -297,15 +297,19 @@ var Ccursor = function (x, y, valx, valy, w, h) {
   this.y = y;
   this.w = w;
   this.h = h;
+  this.cx = valx;
+  this.cy = valy;
+  this.sz = 100;
   this.offsetX = 0;
   this.offsetY = 0;
   this.valx = valx;
   this.valy = valy;
 
-  this.inCir = function () {
-    if (mouseIsPressed) {
+  this.inCur = function () {
+
+    if (mouseIsPressed && mouseX  < width  && mouseX > 0 &&  mouseY < height && mouseY > 0 ) {
       if (mouseReady) {
-        if (mouseX > this.x && mouseX < this.x + this.w && mouseY > this.y && mouseY < this.y + this.h) {
+        if (mouseX < this.valx + (this.sz / 2) && mouseX > this.valx - (this.sz / 2) && mouseY < this.valy + (this.sz / 2) && mouseY > this.valy - (this.sz / 2)) {
 
           this.dragging = true;
           mouseReady = false;
@@ -317,10 +321,14 @@ var Ccursor = function (x, y, valx, valy, w, h) {
       this.dragging = false;
       mouseReady = true;
     }
-  };
+  //   if(mouseX > width && mouseY > height){
+  //     this.dragging = false;
+  //     mouseReady = true;
+  // }
+};
 
   this.show = function () {
-    this.inCir();
+    this.inCur();
     // if (this.dragging) {
     //   fill(50);
     // } 
@@ -331,22 +339,25 @@ var Ccursor = function (x, y, valx, valy, w, h) {
     this.valx = this.x + this.offsetX;
     this.valy = this.y + this.offsetY;
     //rect(this.x, this.y, this.w, this.h);
-
+    stroke(255);
     push();
-    // noStroke();
-    noFill();
-    rect(this.x, this.y, this.w - this.offsetX, this.h - this.offsetY);
+    // stroke(50, 100, 255);
+    // noFill();
+    // rect(this.x, this.y, this.w - this.offsetX, this.h - this.offsetY);
     // ellipse(this.x, this.y, this.w, this.h);
     pop();
+    // stroke(50, 100, 255);
     line(this.x - 5, this.y, this.x - 50, this.y);
     line(this.x, this.y - 5, this.x, this.y - 50);
+    line(this.x, this.y + 5, this.x, this.y + 50);
+    line(this.x + 5, this.y, this.x + 50, this.y);
     text(
-      'x',
-      this.x - 70 , this.y
+      'X',
+      this.x - 70 , this.y +4
     );
     text(
-      'y',
-      this.x , this.y -70
+      'Y',
+      this.x -4 , this.y -70
     );
   };
 };
@@ -366,7 +377,7 @@ var Ccursor = function (x, y, valx, valy, w, h) {
 //});
 //}
 function windowResized() {
-    createCanvas(windowWidth, windowHeight+50);
+    createCanvas(windowWidth, windowHeight);
   // resizeCanvas(windowWidth, windowHeight);
   slide_z = new Slider(width * 0.5, height * 0.8, 0, "Z ", maxZ);
   cursor1 = new Ccursor(100, windowHeight * 0.3, 0, 0, 50, 50);

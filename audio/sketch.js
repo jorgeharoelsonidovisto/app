@@ -153,7 +153,7 @@ function draw() {
   modulator.freq(modulatorFreq);
 
   let Freq = map(cursor1.valx, 0, windowWidth, 20, 5000);
-  let Reso = map(cursor1.valy, 0, windowHeight, 25, 0);
+  let Reso = map(cursor1.valy, 0, windowHeight, 15, 0);
   Freq = constrain(Freq, 0, 22050);
   filter.freq(Freq);
   filter.res(Reso);
@@ -172,10 +172,16 @@ function draw() {
 
 
   // let noiseAmpMod =0;
-  let noiseAmpMod = map(slide_z.val, 0, maxZ, 0, 0.5);
+  // let noiseAmpMod = map(slide_z.val, 0, maxZ, 0, 1.0);
+  // let modamp = map(cursor1.valy, 0, windowHeight, 0, 1.0);
+  // let noisYZ = constrain(modamp - noiseAmpMod, -1, 0);
+  // constrain(noisYZ, 0, 0.1);
   // let carrierAmpMod = map(slide_z.val, 0, maxZ, 1.0, 0);
   // carrier.amp(carrierAmpMod);
-  noise.amp(noiseAmpMod, 0.1);
+  let modmoderamp = map(cursor1.valy, 0, windowHeight, modMinDepth, modMaxDepth);
+  let Modmodamp = map(slide_z.val, 0, maxZ, 0, modmoderamp);
+  let modDepthamp = map(cursor1.valy, 0, windowHeight, modMinDepth, modMaxDepth);
+  noise.amp( Modmodamp );
 
 
   // analyze the waveform
@@ -199,27 +205,35 @@ function draw() {
 
   // strokeWeight(1);
   // add a note about what's happening
-  text('X=Carrier Frequency: ' + modFreq.toFixed(3) + ' Hz', 20, 20);
+  push();
+  
+  let carrierTXT = map(slide_z.val, 0, maxZ, 255, 30);
+  fill(carrierTXT);
+  noStroke();
+  text('X=Carrier Frequency: ' + modFreq.toFixed(3) + ' Hz', width *0.05, 20);
   text(
     'Y=Carrier Amplitude: ' + modDepth.toFixed(3),
-    20,
+    width *0.05,
     40
   );
   text(
     'Modulator Frequency: ' + + modulatorFreq + ' Hz',
-    20,
+    width *0.05,
     60
   );
+  let filterTXT = map(slide_z.val, 0, maxZ, 30, maxZ);
+  fill(filterTXT);
   text(
     'Y=Resonance: ' + Reso.toFixed(3) + ' Hz',
-    width / 2,
+    width *0.7,
     40
   );
   text(
-    'X=LowPass Frequency: ' + Freq.toFixed(3) + ' Hz',
-    width / 2,
+   'X=LowPass Frequency: ' + Modmod.toFixed(3) + ' Hz',
+    width * 0.7,
     20
   );
+  pop();
   // text(
   //   'x',
   //   xB - 23, yB 
@@ -283,10 +297,18 @@ var Slider = function (x, y, val, sym, max) {
     line(this.x - this.len, this.y, this.x + this.len, this.y);
 
     fill(255);
-    text(this.sym, this.x - this.len - 80, this.y);
-
+    push();
+    noStroke();
+    textAlign(CENTER);
+    textSize(12);
+    text(this.sym, this.x - this.len - 50, this.y);
+    pop();
     // text(this.val, this.x + this.len + 10, this.y);
-    ellipse(this.cx, this.y, this.sz, this.sz);
+    // ellipse(this.cx, this.y, this.sz, this.sz);
+    push();
+    rectMode(CENTER);
+    rect(this.cx, this.y, this.sz, this.sz);
+    pop();
   };
 };
 
@@ -297,15 +319,19 @@ var Ccursor = function (x, y, valx, valy, w, h) {
   this.y = y;
   this.w = w;
   this.h = h;
+  this.cx = valx;
+  this.cy = valy;
+  this.sz = 100;
   this.offsetX = 0;
   this.offsetY = 0;
-  this.valx = constrain(valx, 0, windowWidth);
-  this.valy = constrain(valy, 0, windowHeight);
+  this.valx = valx;
+  this.valy = valy;
 
-  this.inCir = function () {
-    if (mouseIsPressed) {
+  this.inCur = function () {
+
+    if (mouseIsPressed && mouseX  < width  && mouseX > 0 &&  mouseY < height && mouseY > 0 ) {
       if (mouseReady) {
-        if (mouseX > this.x && mouseX < this.x + this.w && mouseY > this.y && mouseY < this.y + this.h) {
+        if (mouseX < this.valx + (this.sz / 2) && mouseX > this.valx - (this.sz / 2) && mouseY < this.valy + (this.sz / 2) && mouseY > this.valy - (this.sz / 2)) {
 
           this.dragging = true;
           mouseReady = false;
@@ -317,10 +343,14 @@ var Ccursor = function (x, y, valx, valy, w, h) {
       this.dragging = false;
       mouseReady = true;
     }
-  };
+  //   if(mouseX > width && mouseY > height){
+  //     this.dragging = false;
+  //     mouseReady = true;
+  // }
+};
 
   this.show = function () {
-    this.inCir();
+    this.inCur();
     // if (this.dragging) {
     //   fill(50);
     // } 
@@ -331,22 +361,28 @@ var Ccursor = function (x, y, valx, valy, w, h) {
     this.valx = this.x + this.offsetX;
     this.valy = this.y + this.offsetY;
     //rect(this.x, this.y, this.w, this.h);
-
+    // stroke(50, 100, 255);
     push();
-    // noStroke();
+    // stroke(50, 100, 255);
     noFill();
-    rect(this.x, this.y, this.w - this.offsetX, this.h - this.offsetY);
+    // rect(this.x, this.y, this.w - this.offsetX, this.h - this.offsetY);
     // ellipse(this.x, this.y, this.w, this.h);
     pop();
+    // stroke(50, 100, 255);
+    // noStroke();
     line(this.x - 5, this.y, this.x - 50, this.y);
     line(this.x, this.y - 5, this.x, this.y - 50);
+    line(this.x, this.y + 5, this.x, this.y + 50);
+    line(this.x + 5, this.y, this.x + 50, this.y);
+    pop();
+    noStroke();
     text(
-      'x',
-      this.x - 70 , this.y
+      'X',
+      this.x - 70 , this.y +4
     );
     text(
-      'y',
-      this.x , this.y -70
+      'Y',
+      this.x -4 , this.y -70
     );
   };
 };
@@ -366,9 +402,9 @@ var Ccursor = function (x, y, valx, valy, w, h) {
 //});
 //}
 function windowResized() {
-  createCanvas(windowWidth, windowHeight+100);
+  createCanvas(windowWidth, windowHeight);
   // resizeCanvas(windowWidth, windowHeight);
-  slide_z = new Slider(windowWidth * 0.5, windowHeight * 0.8, 0, "Noise ", maxZ);
+  slide_z = new Slider(windowWidth * 0.5, windowHeight * 0.8, 0, "NOISE ", maxZ);
   cursor1 = new Ccursor(100, windowHeight / 2, 0, 0, 50, 50);
 }
 
