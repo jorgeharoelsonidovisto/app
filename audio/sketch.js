@@ -210,27 +210,28 @@ function draw() {
   let carrierTXT = map(slide_z.val, 0, maxZ, 255, 30);
   fill(carrierTXT);
   noStroke();
-  text('X=Carrier Frequency: ' + modFreq.toFixed(3) + ' Hz', width *0.05, 20);
+  textSize(20);
+  text('X=Carrier Frequency: ' + modFreq.toFixed(3) + ' Hz', width *0.02, 20);
   text(
     'Y=Carrier Amplitude: ' + modDepth.toFixed(3),
-    width *0.05,
+    width *0.02,
     40
   );
   text(
     'Modulator Frequency: ' + + modulatorFreq + ' Hz',
-    width *0.05,
+    width *0.02,
     60
   );
   let filterTXT = map(slide_z.val, 0, maxZ, 30, maxZ);
   fill(filterTXT);
   text(
     'Y=Resonance: ' + Reso.toFixed(3) + ' Hz',
-    width *0.7,
+    width *0.5,
     40
   );
   text(
    'X=LowPass Frequency: ' + Modmod.toFixed(3) + ' Hz',
-    width * 0.7,
+    width * 0.5,
     20
   );
   pop();
