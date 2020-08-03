@@ -3,18 +3,18 @@ class Particle {
   // setting the co-ordinates, radius and the
   // speed of a particle in both the co-ordinates axes.
   constructor() {
-    this.x = random(50, width-50);
+    this.x = random(50, width-80);
     this.y = random(50, height-50);
     this.r = random(10, 20);
-    this.xSpeed = random(-0.1, 0.2);
-    this.ySpeed = random(-0.1, 0.2);
+    this.xSpeed = random(-0.3, 0.4);
+    this.ySpeed = random(-0.3, 0.3);
     this.on = false;
   }
 
   // creation of a particle.
   createParticle() {
     noStroke();
-    fill('rgba(255,255,255,0.7)');
+    fill('rgba(255,255,255,0.5)');
     circle(this.x, this.y, this.r);
   }
 
@@ -32,7 +32,7 @@ class Particle {
         
     //   }
     // });
-    if (this.x < 50 || this.x > width-50)
+    if (this.x < 50 || this.x > width-80)
     this.xSpeed *= -1;
   if (this.y < 50 || this.y > height-50)
     this.ySpeed *= -1;
@@ -52,9 +52,9 @@ class Particle {
         if (mx > this.x - (this.r /2) && mx < this.x + (this.r /2)  && my > this.y - (this.r /2)  && my < this.y + (this.r /2) ) {
           this.on = true;
           link = createA(url,name, "_self");
-          link.position(this.x+20, this.y+10); 
+          link.position(this.x-20, this.y+30); 
           link.style('color','#ffffff');
-          link.style('font-size', '18px');
+          link.style('font-size', '16px');
           link.style('times');
 
                     setTimeout(eraseLink,2000);
@@ -157,7 +157,7 @@ let urls = ["https://es.wikipedia.org/wiki/Luz",
 "https://es.wikipedia.org/wiki/Éliane_Radigue",
 "http://michelchion.com ",
 "http://www.mortonsubotnick.com ",
-"https://www.magison.org/index.html ",
+"https://en.wikipedia.org/wiki/François_Bayle ",
 "https://www.stevereich.com ",
 "https://www.fundacionyupanqui.com.ar ",
 "https://es.wikipedia.org/wiki/Tomatito ",
@@ -200,7 +200,7 @@ let urls = ["https://es.wikipedia.org/wiki/Luz",
 "https://en.wikipedia.org/wiki/Frequency_modulation_synthesis ",
 "https://es.wikipedia.org/wiki/John_Chowning ",
 "http://www.vintagesynth.com/yamaha/tx81z.php ",
-"https://en.wikipedia.org/wiki/Nyquist/Shannon/sampling/theorem ",
+"https://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_theorem",
 "https://es.wikipedia.org/wiki/Sampler ",
 "http://www.vintagesynth.com/ensoniq/ens_eps.php ",
 "https://es.wikipedia.org/wiki/S%C3%ADntesis_granular ",
@@ -213,7 +213,7 @@ let urls = ["https://es.wikipedia.org/wiki/Luz",
 "https://reactable.com ",
 "https://www.plataformabogota.org ",
 "https://www.atractor.org/inicioes ",
-"https://www.apple.com ",
+"https://simple.wikipedia.org/wiki/Apple_Inc. ",
 "https://global.beyerdynamic.com ",
 "https://pro.sony/ue_US/products/headphones ",
 "https://motu.com ",
@@ -468,10 +468,11 @@ names = ["LUZ",
   "ESTOCOLMO",
   ];
 
+
 function setup() {
   // createCanvas(720, 400);
   createCanvas(windowWidth, windowHeight);
-  for (let i = 0; i < 70; i++) {
+  for (let i = 0; i < 50; i++) {
     particles.push(new Particle());
     
   }
