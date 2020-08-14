@@ -77,7 +77,7 @@ function setup() {
   // fade carrier in/out on mouseover / touch start
   //toggleAudio(cnv);
 
-  len = 185;
+  len = 100;
   maxZ = 255;
   unbo = width;
   unboy = height;
@@ -210,7 +210,7 @@ function draw() {
   let carrierTXT = map(slide_z.val, 0, maxZ, 255, 30);
   fill(carrierTXT);
   noStroke();
-  textSize(20);
+  textSize(10);
   text('X=Carrier Frequency: ' + modFreq.toFixed(3) + ' Hz', width *0.02, 20);
   text(
     'Y=Carrier Amplitude: ' + modDepth.toFixed(3),
@@ -223,6 +223,7 @@ function draw() {
     60
   );
   let filterTXT = map(slide_z.val, 0, maxZ, 30, maxZ);
+  
   fill(filterTXT);
   text(
     'Y=Resonance: ' + Reso.toFixed(3) + ' Hz',

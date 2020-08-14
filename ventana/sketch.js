@@ -5,7 +5,7 @@ class Particle {
   constructor() {
     this.x = random(50, width-80);
     this.y = random(50, height-50);
-    this.r = random(10, 20);
+    this.r = random(30, 30);
     this.xSpeed = random(-0.3, 0.4);
     this.ySpeed = random(-0.3, 0.3);
     this.on = false;
@@ -157,7 +157,7 @@ let urls = ["https://es.wikipedia.org/wiki/Luz",
 "https://es.wikipedia.org/wiki/Éliane_Radigue",
 "http://michelchion.com ",
 "http://www.mortonsubotnick.com ",
-"https://en.wikipedia.org/wiki/François_Bayle ",
+"https://www.magison.org/index.html ",
 "https://www.stevereich.com ",
 "https://www.fundacionyupanqui.com.ar ",
 "https://es.wikipedia.org/wiki/Tomatito ",
@@ -200,7 +200,7 @@ let urls = ["https://es.wikipedia.org/wiki/Luz",
 "https://en.wikipedia.org/wiki/Frequency_modulation_synthesis ",
 "https://es.wikipedia.org/wiki/John_Chowning ",
 "http://www.vintagesynth.com/yamaha/tx81z.php ",
-"https://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_theorem",
+"https://en.wikipedia.org/wiki/Nyquist/Shannon/sampling/theorem ",
 "https://es.wikipedia.org/wiki/Sampler ",
 "http://www.vintagesynth.com/ensoniq/ens_eps.php ",
 "https://es.wikipedia.org/wiki/S%C3%ADntesis_granular ",
@@ -213,7 +213,7 @@ let urls = ["https://es.wikipedia.org/wiki/Luz",
 "https://reactable.com ",
 "https://www.plataformabogota.org ",
 "https://www.atractor.org/inicioes ",
-"https://simple.wikipedia.org/wiki/Apple_Inc. ",
+"https://www.apple.com ",
 "https://global.beyerdynamic.com ",
 "https://pro.sony/ue_US/products/headphones ",
 "https://motu.com ",
@@ -468,11 +468,10 @@ names = ["LUZ",
   "ESTOCOLMO",
   ];
 
-
 function setup() {
   // createCanvas(720, 400);
   createCanvas(windowWidth, windowHeight);
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 20; i++) {
     particles.push(new Particle());
     
   }
